@@ -40,26 +40,6 @@ mqttServer.on('published', function(packet, client) {
 
 // On client connection
 io.on('connection', function(socket) {
-  
-	// When a messsage arrive
-	mqttServer.on('published', function(packet, client) {
-
-		// If the topic is meteoNode
-		if(packet.topic == "meteoNode/") {
-
-			try {				
-				// Trick to check if the message is correct
-				var data = JSON.parse(packet.payload);
-				var dataStr = JSON.stringify(data);
-
-				// Send data
-				io.emit("meteoNode/", dataStr);
-			} catch (e) {
-				// Console feedback
-				console.log("SyntaxError");
-			}
-		}
-	});
 
 	// Console feedback on client connection
 	socket.on('connect', function() {
@@ -70,6 +50,26 @@ io.on('connection', function(socket) {
 	socket.on('disconnect', function() {
 		console.log('User disconnected');
 	});
+});
+
+// When a messsage arrive
+mqttServer.on('published', function(packet, client) {
+
+	// If the topic is meteoNode
+	if(packet.topic == "meteoNode/") {
+
+		try {				
+			// Trick to check if the message is correct
+			var data = JSON.parse(packet.payload);
+			var dataStr = JSON.stringify(data);
+
+			// Send data
+			io.emit("meteoNode/", dataStr);
+		} catch (e) {
+			// Console feedback
+			console.log("SyntaxError");
+		}
+	}
 });
 
 // HTTP requests routing to index
