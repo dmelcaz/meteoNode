@@ -1,29 +1,67 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <meta charset="UTF-8">
   <title>meteoNode</title>
   
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
   <script src="http://code.jquery.com/jquery-1.11.1.js"></script>
   <script src="/socket.io/socket.io.js"></script>
+  
+  <link rel="stylesheet" type="text/css" href="/style.css" />
+  <link href='https://fonts.googleapis.com/css?family=Lato:300|Roboto:300' rel='stylesheet' type='text/css'>
+
   <script>
-    var socket = io(); // Inicializamos socketIO en el cliente
+    // Inicializamos socketIO en el cliente
+    var socket = io();
 
     //Si se recibe una actualización del estado
     socket.on('meteoNode/', function (msg) {
+
+      // Mensaje recibido
       console.log("Message received")
+
+      // Parseo del mensaje
       var data = JSON.parse(msg, function(property, value) {
+
+        // Se actualiza el valor
         if (property != "") {
-          document.getElementById(property).innerHTML = value;
+          document.getElementById(property).innerHTML = Math.round(value);
         }
       });
+    });
+
+    $(document).ready(function(){
+      
+      var hour = new Date().getHours();
+      console.log(hour)
+
+      if (hour > 7 && hour < 9) {
+        $('.wrapper').addClass('dawn');
+      } else if (hour < 19) {
+        $('.wrapper').addClass('day');
+      } else if (hour < 20) {
+        $('.wrapper').addClass('sunset');
+      } else {
+        $('.wrapper').addClass('night');
+      }
     });
     
   </script>
 </head>
 
 <body>
-<h3>Temperature: <span id="temperature"></span> °C</h3>
-<h3>Humidity: <span id="humidity"></span> %</h3>
+
+  <div class="wrapper">
+    <div class="container">
+      <h1>
+        <span id="temperature">--</span>°C
+      </h1>
+      <h4>Humidity: <span id="humidity">--</span>%</h4>
+    </div>
+  </div>
+
 </body>
 </html>

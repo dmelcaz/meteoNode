@@ -1,6 +1,7 @@
 
 // Express as HTTP server
-var app  = require('express')();
+var express  = require('express');
+var app = express();
 var http = require('http').Server(app);
 
 // Socket.io 
@@ -73,9 +74,12 @@ mqttServer.on('published', function(packet, client) {
 });
 
 // HTTP requests routing to index
-app.get('*', function(req, res) {
+app.get('/', function(req, res) {
   res.sendFile( __dirname + '/views/index.html');
 });
+
+// Public dir
+app.use(express.static(__dirname + '/public'));
 
 // HTTP server init
 http.listen(3000, function() {
